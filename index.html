@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scotia Smart Investor — David's Weekly Report</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --scotia-red: #EC111A;
+    --dark: #0f0f0f;
+    --card: #242426;
+    --text: #f5f5f7;
+    --muted: #8e8e93;
+    --green: #30d158;
+    --red: #ff453a;
+    --gold: #ffd60a;
+    --blue: #0a84ff;
+    --purple: #bf5af2;
+    --radius: 18px;
+  }
+
+  body {
+    background: #111;
+    min-height: 100vh;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 28px;
+    padding: 40px 24px 80px;
+  }
+
+  /* ═══════════════════════════
+     PHONE COLUMN
+  ═══════════════════════════ */
+  .phone-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .page-title {
+    width: 100%; max-width: 390px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .page-title h1 { font-family: 'DM Serif Display', serif; font-size: 18px; color: #fff; letter-spacing: -0.3px; }
+  .week-badge { font-size: 11px; font-weight: 500; color: var(--muted); background: var(--card); padding: 4px 10px; border-radius: 20px; border: 1px solid #333; }
+
+  .phone {
+    width: 390px;
+    background: var(--dark);
+    border-radius: 52px;
+    padding: 18px 12px 28px;
+    box-shadow: 0 0 0 1px #333, 0 40px 80px rgba(0,0,0,0.8), 0 0 0 8px #111, 0 0 0 9px #2a2a2a;
+  }
+
+  .notch { width: 110px; height: 30px; background: #000; border-radius: 0 0 20px 20px; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .notch-cam { width: 10px; height: 10px; border-radius: 50%; background: #1a1a1a; border: 2px solid #2a2a2a; }
+  .notch-bar { width: 50px; height: 5px; border-radius: 10px; background: #1a1a1a; }
+
+  .app-header { display: flex; align-items: center; justify-content: space-between; padding: 0 8px 14px; border-bottom: 1px solid #1e1e1e; }
+  .app-logo { display: flex; align-items: center; gap: 8px; }
+  .app-logo .dot { width: 28px; height: 28px; background: var(--scotia-red); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .app-logo .dot svg { width: 16px; }
+  .app-logo span { font-size: 11px; font-weight: 600; color: var(--text); line-height: 1.2; }
+  .app-logo small { display: block; font-size: 10px; color: var(--muted); font-weight: 400; }
+  .header-right { text-align: right; }
+  .header-right .user-name { font-size: 12px; font-weight: 600; color: var(--text); }
+  .header-right .header-sub { font-size: 10px; color: var(--muted); }
+
+  .phone-scroll { overflow-y: auto; max-height: 700px; padding: 14px 8px 8px; display: flex; flex-direction: column; gap: 12px; scrollbar-width: none; }
+  .phone-scroll::-webkit-scrollbar { display: none; }
+
+  /* Cards */
+  .card { background: var(--card); border-radius: var(--radius); padding: 16px; border: 1px solid rgba(255,255,255,0.05); animation: fadeUp 0.5s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .card:nth-child(1) { animation-delay: 0.05s; } .card:nth-child(2) { animation-delay: 0.1s; }
+  .card:nth-child(3) { animation-delay: 0.15s; } .card:nth-child(4) { animation-delay: 0.2s; }
+  .card:nth-child(5) { animation-delay: 0.25s; } .card:nth-child(6) { animation-delay: 0.3s; }
+  .card:nth-child(7) { animation-delay: 0.35s; } .card:nth-child(8) { animation-delay: 0.4s; }
+  .card:nth-child(9) { animation-delay: 0.45s; } .card:nth-child(10) { animation-delay: 0.5s; }
+
+  .card-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 12px; }
+  .card-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .card-title-row .card-title { margin-bottom: 0; }
+  .card-tag { font-size: 9px; font-weight: 600; padding: 2px 7px; border-radius: 4px; }
+
+  /* ── GOAL ROW ── */
+  .goal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* PIE */
+  .goal-pie-card { display: flex; flex-direction: column; align-items: center; }
+  .pie-wrap { position: relative; width: 104px; height: 104px; margin-bottom: 8px; }
+  .pie-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .pie-seg { cursor: pointer; transition: opacity 0.15s; }
+  .pie-seg:hover { opacity: 0.75; }
+  .pie-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; pointer-events: none; }
+  .pie-center .amount { font-family: 'DM Serif Display', serif; font-size: 13px; color: var(--text); line-height: 1; }
+  .pie-center .label { font-size: 9px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+  .pie-legend { width: 100%; }
+  .legend-item { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; font-size: 11px; color: var(--text); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+  .legend-item span { color: var(--muted); font-size: 10px; margin-left: auto; }
+
+  /* Tooltip */
+  .pie-tooltip { position: fixed; background: #1c1c1e; border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; padding: 10px 12px; font-size: 11px; color: var(--text); pointer-events: none; z-index: 9999; white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.8); opacity: 0; transition: opacity 0.15s; min-width: 148px; }
+  .pie-tooltip.visible { opacity: 1; }
+  .tt-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 7px; border-bottom: 1px solid rgba(255,255,255,0.07); padding-bottom: 6px; gap: 12px; }
+  .tt-acct { font-weight: 600; font-size: 12px; }
+  .tt-pct { font-family: 'DM Serif Display', serif; font-size: 15px; }
+  .tt-row { display: flex; justify-content: space-between; gap: 16px; margin-top: 4px; font-size: 10px; }
+  .tt-type { color: var(--muted); }
+  .tt-val { font-weight: 600; }
+
+  /* PAC */
+  .pac-item { margin-bottom: 13px; }
+  .pac-item:last-child { margin-bottom: 0; }
+  .pac-label { display: flex; justify-content: space-between; font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 5px; }
+  .pac-label small { color: var(--muted); font-size: 10px; font-weight: 400; }
+  .bar-track { height: 8px; background: rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; margin-bottom: 4px; }
+  .bar-fill { height: 100%; border-radius: 10px; }
+  .pac-remaining { font-size: 10px; color: var(--muted); }
+
+  /* AI RECAP */
+  .recap-card { background: linear-gradient(135deg, #1a1a2e 0%, var(--card) 100%); border: 1px solid rgba(10,132,255,0.2); }
+  .recap-header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+  .ai-badge { background: linear-gradient(135deg, #0a84ff, #5e5ce6); border-radius: 8px; padding: 4px 9px; font-size: 10px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
+  .recap-title-text { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--text); }
+  .news-items { display: flex; flex-direction: column; gap: 8px; }
+  .news-item { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 10px 12px; border-left: 3px solid var(--blue); cursor: pointer; transition: background 0.2s; }
+  .news-item:nth-child(2) { border-left-color: var(--red); }
+  .news-item:nth-child(3) { border-left-color: var(--gold); }
+  .news-item:nth-child(4) { border-left-color: var(--green); }
+  .news-item:hover { background: rgba(255,255,255,0.07); }
+  .news-item.open { background: rgba(255,255,255,0.07); }
+  .news-headline { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .news-impact { font-size: 11px; color: var(--muted); line-height: 1.4; display: none; margin-top: 6px; }
+  .news-item.open .news-impact { display: block; }
+  .news-toggle { font-size: 10px; color: var(--blue); font-weight: 500; margin-top: 4px; }
+
+  /* STOCKS */
+  .stock-row { display: flex; align-items: flex-start; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .stock-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .stock-row:first-child { padding-top: 0; }
+  .stock-info { min-width: 68px; }
+  .stock-ticker { font-family: 'DM Serif Display', serif; font-size: 15px; color: var(--text); }
+  .stock-name { font-size: 10px; color: var(--muted); margin-top: 1px; }
+  .stock-price { font-size: 10px; color: #666; margin-top: 2px; }
+  .stock-mid { flex: 1; margin: 0 10px; }
+  .stock-chart { height: 30px; }
+  .stock-chart svg { width: 100%; height: 100%; }
+  .day-labels { display: flex; justify-content: space-between; font-size: 8px; color: #555; padding: 2px 1px 0; }
+  .stock-change { font-size: 13px; font-weight: 600; min-width: 48px; text-align: right; padding-top: 4px; }
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+
+  /* FUNDS */
+  .funds-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .funds-col-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); margin-bottom: 8px; }
+  .fund-item { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 10px; margin-bottom: 6px; border: 1px solid rgba(255,255,255,0.05); }
+  .fund-item:last-child { margin-bottom: 0; }
+  .fund-name { font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .fund-return { font-size: 12px; font-weight: 700; }
+  .fund-type { font-size: 9px; color: var(--muted); margin-top: 2px; }
+  .owned-badge { display: inline-block; background: rgba(48,209,88,0.12); color: var(--green); border-radius: 4px; font-size: 9px; font-weight: 600; padding: 1px 5px; margin-bottom: 4px; }
+  .market-badge { display: inline-block; background: rgba(10,132,255,0.12); color: var(--blue); border-radius: 4px; font-size: 9px; font-weight: 600; padding: 1px 5px; margin-bottom: 4px; }
+
+  /* GOALS LIST */
+  .goal-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .goal-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .goal-item:first-child { padding-top: 0; }
+  .goal-icon { width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+  .goal-info { flex: 1; }
+  .goal-name { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .goal-bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .goal-bar-track { flex: 1; height: 5px; background: rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; }
+  .goal-bar-fill { height: 100%; border-radius: 10px; }
+  .goal-pct { font-size: 10px; color: var(--muted); min-width: 28px; text-align: right; }
+  .goal-right { text-align: right; }
+  .goal-status { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+  .goal-target { font-size: 9px; color: var(--muted); margin-top: 3px; }
+  .on-track { background: rgba(48,209,88,0.12); color: var(--green); }
+  .watch { background: rgba(255,214,10,0.12); color: var(--gold); }
+  .behind { background: rgba(255,69,58,0.12); color: var(--red); }
+
+  /* TAX SUMMARY */
+  .tax-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .tax-item { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 10px 12px; border: 1px solid rgba(255,255,255,0.05); }
+  .tax-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+  .tax-value { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--text); }
+  .tax-sub { font-size: 9px; margin-top: 2px; }
+
+  /* MORTGAGE */
+  .mortgage-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .mortgage-row:last-child { border-bottom: none; }
+  .mortgage-label { font-size: 11px; color: var(--muted); }
+  .mortgage-value { font-size: 12px; font-weight: 600; color: var(--text); }
+
+  /* EDUCATION */
+  .edu-item { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 10px 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; }
+  .edu-item:last-child { margin-bottom: 0; }
+  .edu-name { font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+  .edu-badge { font-size: 9px; font-weight: 600; padding: 1px 6px; border-radius: 4px; }
+  .univ { background: rgba(191,90,242,0.15); color: var(--purple); }
+  .hs { background: rgba(10,132,255,0.12); color: var(--blue); }
+
+  /* SCROLL HINT */
+  .scroll-hint { text-align: center; font-size: 11px; color: #444; padding-top: 6px; animation: bounce 2s infinite; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(3px); opacity: 1; } }
+
+  /* ═══════════════════════════
+     SIDE PANEL
+  ═══════════════════════════ */
+  .side-panel {
+    width: 320px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-top: 56px; /* align with phone top */
+  }
+
+  .panel-card {
+    background: #1c1c1e;
+    border-radius: 16px;
+    padding: 16px 18px;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .panel-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--scotia-red), #ff6b6b);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px; color: #fff;
+    flex-shrink: 0;
+  }
+  .panel-name { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--text); }
+  .panel-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
+  .panel-section-title {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+    color: var(--muted); margin-bottom: 8px; margin-top: 12px;
+  }
+  .panel-section-title:first-child { margin-top: 0; }
+
+  .stat-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 7px; }
+  .stat-label { font-size: 11px; color: var(--muted); line-height: 1.4; max-width: 120px; }
+  .stat-value { font-size: 11px; font-weight: 600; color: var(--text); text-align: right; max-width: 160px; line-height: 1.4; }
+
+  .panel-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 12px 0; }
+
+  /* Widget rationale cards */
+  .rationale-card {
+    background: #1c1c1e;
+    border-radius: 16px;
+    padding: 16px 18px;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .rationale-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 14px; color: var(--text);
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .rationale-icon {
+    width: 26px; height: 26px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; flex-shrink: 0;
+  }
+  .rationale-body { font-size: 11px; color: var(--muted); line-height: 1.6; }
+  .rationale-body strong { color: var(--text); font-weight: 600; }
+
+  .interest-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.07);
+    color: var(--text);
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 8px;
+    margin: 2px 2px 2px 0;
+  }
+
+  /* Responsive: stack on small screens */
+  @media (max-width: 780px) {
+    body { flex-direction: column; align-items: center; }
+    .side-panel { width: 100%; max-width: 390px; padding-top: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ PHONE COLUMN ══════════════ -->
+<div class="phone-col">
+  <div class="page-title">
+    <h1>Smart Investor Report</h1>
+    <div class="week-badge">Feb 17–21, 2026</div>
+  </div>
+
+  <div class="phone">
+    <div class="notch"><div class="notch-cam"></div><div class="notch-bar"></div></div>
+
+    <div class="app-header">
+      <div class="app-logo">
+        <div class="dot">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/></svg>
+        </div>
+        <div><span>Scotia Smart Investor</span><small>by Scotiabank</small></div>
+      </div>
+      <div class="header-right">
+        <div class="user-name">Hi, David 👋</div>
+        <div class="header-sub">Weekly Recap</div>
+      </div>
+    </div>
+
+    <div class="phone-scroll">
+
+      <!-- ① PORTFOLIO + LIMITS & PACs -->
+      <div class="goal-row">
+        <div class="card goal-pie-card">
+          <div class="card-title">Your Portfolio</div>
+          <div class="pie-wrap">
+            <svg viewBox="0 0 100 100" id="pieSvg">
+              <circle class="pie-seg" data-account="RRSP" data-pct="42%" data-eq="68%" data-fi="22%" data-cash="10%"
+                cx="50" cy="50" r="38" fill="none" stroke="#0a84ff" stroke-width="10"
+                stroke-dasharray="100.2 139.3" stroke-dashoffset="0"/>
+              <circle class="pie-seg" data-account="TFSA" data-pct="35%" data-eq="80%" data-fi="12%" data-cash="8%"
+                cx="50" cy="50" r="38" fill="none" stroke="#30d158" stroke-width="10"
+                stroke-dasharray="83.5 156.5" stroke-dashoffset="-100.2"/>
+              <circle class="pie-seg" data-account="Non-Reg." data-pct="16%" data-eq="90%" data-fi="5%" data-cash="5%"
+                cx="50" cy="50" r="38" fill="none" stroke="#ffd60a" stroke-width="10"
+                stroke-dasharray="38.2 201.3" stroke-dashoffset="-183.7"/>
+              <circle class="pie-seg" data-account="Cash/GIC" data-pct="7%" data-eq="0%" data-fi="0%" data-cash="100%"
+                cx="50" cy="50" r="38" fill="none" stroke="#3a3a3c" stroke-width="10"
+                stroke-dasharray="16.7 222.8" stroke-dashoffset="-221.9"/>
+            </svg>
+            <div class="pie-center">
+              <div class="amount">$412K</div>
+              <div class="label">total</div>
+            </div>
+          </div>
+          <div class="pie-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#0a84ff"></div> RRSP <span>$173K</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#30d158"></div> TFSA <span>$144K</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#ffd60a"></div> Non-Reg. <span>$66K</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#3a3a3c"></div> GIC/Cash <span>$29K</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Limits & PACs</div>
+          <div class="pac-item">
+            <div class="pac-label">TFSA <small>$81K / $95K</small></div>
+            <div class="bar-track"><div class="bar-fill" style="width:85%;background:linear-gradient(90deg,#30d158,#34c759);"></div></div>
+            <div class="pac-remaining">2 PACs left</div>
+          </div>
+          <div class="pac-item">
+            <div class="pac-label">RRSP <small>$173K / $200K</small></div>
+            <div class="bar-track"><div class="bar-fill" style="width:87%;background:linear-gradient(90deg,#0a84ff,#5e5ce6);"></div></div>
+            <div class="pac-remaining">3 PACs left</div>
+          </div>
+          <div class="pac-item">
+            <div class="pac-label">Non-Reg. <small>No limit</small></div>
+            <div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,#ffd60a,#ff9f0a);"></div></div>
+            <div class="pac-remaining">Open account</div>
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:10px;">$2,500/mo PAC active →</div>
+        </div>
+      </div>
+
+      <!-- ② AI SMART RECAP -->
+      <div class="card recap-card">
+        <div class="recap-header">
+          <div class="ai-badge">AI</div>
+          <div class="recap-title-text">Smart Recap</div>
+        </div>
+        <div class="news-items">
+          <div class="news-item" onclick="toggle(this)">
+            <div class="news-headline">🤖 Nvidia earnings beat expectations — AI rally resumes</div>
+            <div class="news-toggle">How it impacts you ↓</div>
+            <div class="news-impact">Nvidia beat Q4 estimates by 18%, sending AI-adjacent stocks higher. Your NVDA position (non-reg.) and VFV both benefit — Nvidia is the #2 S&P 500 weight. Your Dynamic Global Technology Class fund is up ~3.1% on the news. This reinforces your tech thesis but also raises valuation risk — your advisor suggests trimming 5% to rebalance.</div>
+          </div>
+          <div class="news-item" onclick="toggle(this)">
+            <div class="news-headline">⚖️ Supreme Court caps tariffs at 15% — S&P holds steady</div>
+            <div class="news-toggle">How it impacts you ↓</div>
+            <div class="news-impact">The court's ruling avoided the worst-case 25%+ scenario markets feared. Your VFV and US-facing holdings (MSFT, AAPL) are relatively insulated. However, your non-reg. account's Canadian equity exposure may face mild headwinds as CAD/USD reacts to trade uncertainty.</div>
+          </div>
+          <div class="news-item" onclick="toggle(this)">
+            <div class="news-headline">⛏️ Barrick Mining spinoff — gold above $5,000/oz</div>
+            <div class="news-toggle">How it impacts you ↓</div>
+            <div class="news-impact">Gold's continued rise acts as a diversification anchor in your portfolio. ABX.TO surged +3.4% this week. Your Dynamic Precious Metals fund is benefitting. With your RRSP nearing full capacity, analysts suggest routing new gold exposure through your TFSA to shelter future gains.</div>
+          </div>
+          <div class="news-item" onclick="toggle(this)">
+            <div class="news-headline">🏠 BoC holds rate at 2.75% — mortgage market stable</div>
+            <div class="news-toggle">How it impacts you ↓</div>
+            <div class="news-impact">The Bank of Canada held its key rate, providing stability for variable mortgage holders. Your renewal window opens in ~14 months — locking in a 5-year fixed now vs waiting is a decision worth reviewing with your advisor, especially with your remaining $680K balance.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ③ GOALS TRACKER -->
+      <div class="card">
+        <div class="card-title-row">
+          <div class="card-title">Your Goals</div>
+          <span style="font-size:10px;color:var(--blue);cursor:pointer;">Manage →</span>
+        </div>
+
+        <div class="goal-item">
+          <div class="goal-icon" style="background:rgba(10,132,255,0.12);">🏖️</div>
+          <div class="goal-info">
+            <div class="goal-name">Retirement at 60</div>
+            <div class="goal-bar-wrap">
+              <div class="goal-bar-track"><div class="goal-bar-fill" style="width:68%;background:linear-gradient(90deg,#0a84ff,#5e5ce6);"></div></div>
+              <div class="goal-pct">68%</div>
+            </div>
+          </div>
+          <div class="goal-right">
+            <div class="goal-status on-track">ON-TRACK</div>
+            <div class="goal-target">$1.8M · 7 yrs</div>
+          </div>
+        </div>
+
+        <div class="goal-item">
+          <div class="goal-icon" style="background:rgba(191,90,242,0.12);">🎓</div>
+          <div class="goal-info">
+            <div class="goal-name">University — Ethan</div>
+            <div class="goal-bar-wrap">
+              <div class="goal-bar-track"><div class="goal-bar-fill" style="width:55%;background:linear-gradient(90deg,#bf5af2,#7d2fd0);"></div></div>
+              <div class="goal-pct">55%</div>
+            </div>
+          </div>
+          <div class="goal-right">
+            <div class="goal-status watch">WATCH</div>
+            <div class="goal-target">$80K · ongoing</div>
+          </div>
+        </div>
+
+        <div class="goal-item">
+          <div class="goal-icon" style="background:rgba(255,214,10,0.12);">📚</div>
+          <div class="goal-info">
+            <div class="goal-name">Tuition Reserve — HS Kids</div>
+            <div class="goal-bar-wrap">
+              <div class="goal-bar-track"><div class="goal-bar-fill" style="width:40%;background:linear-gradient(90deg,#ffd60a,#ff9f0a);"></div></div>
+              <div class="goal-pct">40%</div>
+            </div>
+          </div>
+          <div class="goal-right">
+            <div class="goal-status watch">WATCH</div>
+            <div class="goal-target">$120K · 2–4 yrs</div>
+          </div>
+        </div>
+
+        <div class="goal-item">
+          <div class="goal-icon" style="background:rgba(48,209,88,0.12);">🏠</div>
+          <div class="goal-info">
+            <div class="goal-name">Mortgage Payoff</div>
+            <div class="goal-bar-wrap">
+              <div class="goal-bar-track"><div class="goal-bar-fill" style="width:66%;background:linear-gradient(90deg,#30d158,#34c759);"></div></div>
+              <div class="goal-pct">66%</div>
+            </div>
+          </div>
+          <div class="goal-right">
+            <div class="goal-status on-track">ON-TRACK</div>
+            <div class="goal-target">$680K left</div>
+          </div>
+        </div>
+
+        <div class="goal-item">
+          <div class="goal-icon" style="background:rgba(255,69,58,0.12);">✈️</div>
+          <div class="goal-info">
+            <div class="goal-name">Europe Trip (Retirement)</div>
+            <div class="goal-bar-wrap">
+              <div class="goal-bar-track"><div class="goal-bar-fill" style="width:22%;background:linear-gradient(90deg,#ff453a,#ff6b6b);"></div></div>
+              <div class="goal-pct">22%</div>
+            </div>
+          </div>
+          <div class="goal-right">
+            <div class="goal-status behind">BEHIND</div>
+            <div class="goal-target">$25K · 7 yrs</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ④ STOCKS TRACKED -->
+      <div class="card">
+        <div class="card-title">Stocks you tracked this week</div>
+
+        <div class="stock-row">
+          <div class="stock-info">
+            <div class="stock-ticker">VFV</div>
+            <div class="stock-name">Vanguard S&P 500</div>
+            <div class="stock-price">$166.42 CAD</div>
+          </div>
+          <div class="stock-mid">
+            <div class="stock-chart">
+              <svg viewBox="0 0 80 30" preserveAspectRatio="none">
+                <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff453a" stop-opacity="0.25"/><stop offset="100%" stop-color="#ff453a" stop-opacity="0"/></linearGradient></defs>
+                <polyline points="0,8 20,11 40,7 56,14 72,17 80,20" fill="none" stroke="#ff453a" stroke-width="2" stroke-linejoin="round"/>
+                <polygon points="0,8 20,11 40,7 56,14 72,17 80,20 80,30 0,30" fill="url(#g1)"/>
+              </svg>
+            </div>
+            <div class="day-labels"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span></div>
+          </div>
+          <div class="stock-change down">−0.99%</div>
+        </div>
+
+        <div class="stock-row">
+          <div class="stock-info">
+            <div class="stock-ticker">NVDA</div>
+            <div class="stock-name">Nvidia Corp.</div>
+            <div class="stock-price">$138.10 USD</div>
+          </div>
+          <div class="stock-mid">
+            <div class="stock-chart">
+              <svg viewBox="0 0 80 30" preserveAspectRatio="none">
+                <defs><linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#30d158" stop-opacity="0.25"/><stop offset="100%" stop-color="#30d158" stop-opacity="0"/></linearGradient></defs>
+                <polyline points="0,24 20,20 40,16 56,12 72,7 80,4" fill="none" stroke="#30d158" stroke-width="2" stroke-linejoin="round"/>
+                <polygon points="0,24 20,20 40,16 56,12 72,7 80,4 80,30 0,30" fill="url(#g2)"/>
+              </svg>
+            </div>
+            <div class="day-labels"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span></div>
+          </div>
+          <div class="stock-change up">+4.8%</div>
+        </div>
+
+        <div class="stock-row">
+          <div class="stock-info">
+            <div class="stock-ticker">MSFT</div>
+            <div class="stock-name">Microsoft Corp.</div>
+            <div class="stock-price">$418.30 USD</div>
+          </div>
+          <div class="stock-mid">
+            <div class="stock-chart">
+              <svg viewBox="0 0 80 30" preserveAspectRatio="none">
+                <defs><linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#30d158" stop-opacity="0.25"/><stop offset="100%" stop-color="#30d158" stop-opacity="0"/></linearGradient></defs>
+                <polyline points="0,18 20,16 40,19 56,13 72,11 80,9" fill="none" stroke="#30d158" stroke-width="2" stroke-linejoin="round"/>
+                <polygon points="0,18 20,16 40,19 56,13 72,11 80,9 80,30 0,30" fill="url(#g3)"/>
+              </svg>
+            </div>
+            <div class="day-labels"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span></div>
+          </div>
+          <div class="stock-change up">+1.7%</div>
+        </div>
+
+        <div class="stock-row">
+          <div class="stock-info">
+            <div class="stock-ticker">ABX</div>
+            <div class="stock-name">Barrick Mining</div>
+            <div class="stock-price">$68.15 CAD</div>
+          </div>
+          <div class="stock-mid">
+            <div class="stock-chart">
+              <svg viewBox="0 0 80 30" preserveAspectRatio="none">
+                <defs><linearGradient id="g4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#30d158" stop-opacity="0.25"/><stop offset="100%" stop-color="#30d158" stop-opacity="0"/></linearGradient></defs>
+                <polyline points="0,22 20,18 40,14 56,16 72,10 80,8" fill="none" stroke="#30d158" stroke-width="2" stroke-linejoin="round"/>
+                <polygon points="0,22 20,18 40,14 56,16 72,10 80,8 80,30 0,30" fill="url(#g4)"/>
+              </svg>
+            </div>
+            <div class="day-labels"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span></div>
+          </div>
+          <div class="stock-change up">+3.4%</div>
+        </div>
+
+        <div class="stock-row">
+          <div class="stock-info">
+            <div class="stock-ticker">AAPL</div>
+            <div class="stock-name">Apple Inc.</div>
+            <div class="stock-price">$228.50 USD</div>
+          </div>
+          <div class="stock-mid">
+            <div class="stock-chart">
+              <svg viewBox="0 0 80 30" preserveAspectRatio="none">
+                <defs><linearGradient id="g5" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff453a" stop-opacity="0.2"/><stop offset="100%" stop-color="#ff453a" stop-opacity="0"/></linearGradient></defs>
+                <polyline points="0,10 20,13 40,11 56,16 72,18 80,17" fill="none" stroke="#ff453a" stroke-width="2" stroke-linejoin="round"/>
+                <polygon points="0,10 20,13 40,11 56,16 72,18 80,17 80,30 0,30" fill="url(#g5)"/>
+              </svg>
+            </div>
+            <div class="day-labels"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span></div>
+          </div>
+          <div class="stock-change down">−0.4%</div>
+        </div>
+      </div>
+
+      <!-- ⑤ BEST PERFORMING FUNDS -->
+      <div class="card">
+        <div class="card-title">Best performing Scotia & Dynamic funds</div>
+        <div class="funds-grid">
+          <div>
+            <div class="funds-col-label">You own</div>
+            <div class="fund-item"><div class="owned-badge">OWNED</div><div class="fund-name">Dynamic Global Tech Class</div><div class="fund-return up">+3.1%</div><div class="fund-type">Equity · Tech</div></div>
+            <div class="fund-item"><div class="owned-badge">OWNED</div><div class="fund-name">Dynamic Precious Metals</div><div class="fund-return up">+2.8%</div><div class="fund-type">Equity · Commodities</div></div>
+            <div class="fund-item"><div class="owned-badge">OWNED</div><div class="fund-name">Scotia Cdn Dividend</div><div class="fund-return up">+1.4%</div><div class="fund-type">Equity · Income</div></div>
+          </div>
+          <div>
+            <div class="funds-col-label">In the market</div>
+            <div class="fund-item"><div class="market-badge">MARKET</div><div class="fund-name">Dynamic Power American Growth</div><div class="fund-return up">+4.2%</div><div class="fund-type">Equity · US Growth</div></div>
+            <div class="fund-item"><div class="market-badge">MARKET</div><div class="fund-name">Scotia Bond Fund</div><div class="fund-return up">+0.6%</div><div class="fund-type">Fixed Income</div></div>
+            <div class="fund-item"><div class="market-badge">MARKET</div><div class="fund-name">Dynamic Global Balanced</div><div class="fund-return up">+1.9%</div><div class="fund-type">Balanced · Global</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⑥ RETIREMENT GOAL -->
+      <div class="card">
+        <div class="card-title">Retirement Goal — Age 60</div>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <div style="position:relative;width:90px;height:90px;flex-shrink:0;">
+            <svg viewBox="0 0 100 100" style="width:100%;height:100%;transform:rotate(-90deg);">
+              <circle cx="50" cy="50" r="38" fill="none" stroke="#0a84ff" stroke-width="11" stroke-dasharray="130.8 108.7" stroke-dashoffset="0"/>
+              <circle cx="50" cy="50" r="38" fill="none" stroke="#30d158" stroke-width="11" stroke-dasharray="83.5 156.5" stroke-dashoffset="-130.8"/>
+              <circle cx="50" cy="50" r="38" fill="none" stroke="#2a2a2c" stroke-width="11" stroke-dasharray="25.2 214.3" stroke-dashoffset="-214.3"/>
+            </svg>
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+              <div style="font-family:'DM Serif Display',serif;font-size:13px;color:var(--text);line-height:1;">$1.8M</div>
+              <div style="font-size:8px;color:var(--muted);margin-top:1px;">target</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+            <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--text);line-height:1;">68%</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:2px;">Complete</div>
+            <div style="margin-top:8px;background:rgba(48,209,88,0.12);color:var(--green);border-radius:6px;font-size:9px;font-weight:700;padding:3px 8px;letter-spacing:0.4px;">ON-TRACK</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:5px;">
+            <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:6px 8px;">
+              <div style="font-size:9px;color:var(--muted);margin-bottom:1px;">Monthly PAC</div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);">$2,500<span style="font-size:9px;color:var(--muted);font-weight:400;">/mo</span></div>
+            </div>
+            <div style="font-size:10px;color:var(--muted);display:flex;flex-direction:column;gap:3px;padding:2px 2px 0;">
+              <div style="display:flex;align-items:center;gap:5px;"><div style="width:7px;height:7px;border-radius:2px;background:#0a84ff;flex-shrink:0;"></div><span style="color:var(--text);">RRSP</span><span style="margin-left:auto;">$173K</span></div>
+              <div style="display:flex;align-items:center;gap:5px;"><div style="width:7px;height:7px;border-radius:2px;background:#30d158;flex-shrink:0;"></div><span style="color:var(--text);">TFSA</span><span style="margin-left:auto;">$144K</span></div>
+              <div style="display:flex;align-items:center;gap:5px;"><div style="width:7px;height:7px;border-radius:2px;background:#ffd60a;flex-shrink:0;"></div><span style="color:var(--text);">Equity</span><span style="margin-left:auto;">74%</span></div>
+              <div style="display:flex;align-items:center;gap:5px;"><div style="width:7px;height:7px;border-radius:2px;background:#5e5ce6;flex-shrink:0;"></div><span style="color:var(--text);">Fixed</span><span style="margin-left:auto;">20%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⑦ INSIGHTS -->
+      <div class="card">
+        <div class="card-title">Insights</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div class="tax-item"><div class="tax-label">Dividends Total</div><div class="tax-value">$4,820</div><div class="tax-sub up">↑ +11.2% vs last yr</div></div>
+          <div class="tax-item"><div class="tax-label">Unrealized Returns</div><div class="tax-value">$68,400</div><div class="tax-sub up">↑ +16.6% overall</div></div>
+          <div class="tax-item"><div class="tax-label">Fixed Income Returns</div><div class="tax-value">$3,140</div><div class="tax-sub up">↑ +4.8% this yr</div></div>
+          <div class="tax-item"><div class="tax-label">Total Return (YTD)</div><div class="tax-value">$76,360</div><div class="tax-sub up">↑ +18.5% overall</div></div>
+        </div>
+      </div>
+
+      <!-- ⑧ TAX EFFICIENCY (NEW) -->
+      <div class="card">
+        <div class="card-title-row">
+          <div class="card-title">Tax Efficiency</div>
+          <span style="font-size:9px;background:rgba(255,214,10,0.12);color:var(--gold);border-radius:4px;padding:2px 6px;font-weight:700;">2025 TAX YEAR</span>
+        </div>
+        <div class="tax-grid">
+          <div class="tax-item">
+            <div class="tax-label">RRSP Contribution Room</div>
+            <div class="tax-value" style="font-size:15px;">$27,400</div>
+            <div class="tax-sub" style="color:var(--muted);">Deadline: Mar 1</div>
+          </div>
+          <div class="tax-item">
+            <div class="tax-label">Est. Tax Refund (RRSP)</div>
+            <div class="tax-value" style="font-size:15px;">$11,200</div>
+            <div class="tax-sub up">~43% marginal rate</div>
+          </div>
+          <div class="tax-item">
+            <div class="tax-label">Capital Gains Realized</div>
+            <div class="tax-value" style="font-size:15px;">$12,840</div>
+            <div class="tax-sub" style="color:var(--muted);">Non-reg. acct.</div>
+          </div>
+          <div class="tax-item">
+            <div class="tax-label">TFSA Room Remaining</div>
+            <div class="tax-value" style="font-size:15px;">$14,000</div>
+            <div class="tax-sub" style="color:var(--green);">2026 room opens Jan 1</div>
+          </div>
+        </div>
+        <div style="background:rgba(255,214,10,0.06);border:1px solid rgba(255,214,10,0.15);border-radius:10px;padding:10px 12px;margin-top:10px;">
+          <div style="font-size:11px;color:var(--gold);font-weight:600;margin-bottom:3px;">💡 Advisor Tip</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5;">You have $27,400 in RRSP room before March 1. Contributing the maximum could save you ~$11,200 in taxes this year and accelerate your retirement goal.</div>
+        </div>
+      </div>
+
+      <!-- ⑨ MORTGAGE SNAPSHOT (NEW) -->
+      <div class="card">
+        <div class="card-title-row">
+          <div class="card-title">Mortgage Snapshot</div>
+          <span style="font-size:9px;background:rgba(48,209,88,0.12);color:var(--green);border-radius:4px;padding:2px 6px;font-weight:700;">STABLE</span>
+        </div>
+        <div class="mortgage-row"><div class="mortgage-label">Property Value (est.)</div><div class="mortgage-value">$2.4M</div></div>
+        <div class="mortgage-row"><div class="mortgage-label">Outstanding Balance</div><div class="mortgage-value" style="color:var(--red);">$680,000</div></div>
+        <div class="mortgage-row"><div class="mortgage-label">Current Rate</div><div class="mortgage-value">4.89% fixed</div></div>
+        <div class="mortgage-row"><div class="mortgage-label">Renewal Date</div><div class="mortgage-value">Apr 2027 · <span style="color:var(--gold);">14 mo</span></div></div>
+        <div class="mortgage-row"><div class="mortgage-label">Equity Built</div><div class="mortgage-value" style="color:var(--green);">$1,720,000</div></div>
+        <div class="mortgage-row"><div class="mortgage-label">Monthly Payment</div><div class="mortgage-value">$3,840</div></div>
+        <div style="background:rgba(10,132,255,0.07);border:1px solid rgba(10,132,255,0.15);border-radius:10px;padding:10px 12px;margin-top:10px;">
+          <div style="font-size:11px;color:var(--blue);font-weight:600;margin-bottom:3px;">📅 Renewal Approaching</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5;">Your mortgage renews in April 2027. Current 5-year fixed rates sit around 4.4% — locking in now vs. waiting is worth reviewing with your Scotia advisor given your financial picture.</div>
+        </div>
+      </div>
+
+      <!-- ⑩ EDUCATION FUND TRACKER (NEW) -->
+      <div class="card">
+        <div class="card-title">Education Fund Tracker</div>
+        <div class="edu-item">
+          <div class="edu-name">Ethan — University (Year 2) <span class="edu-badge univ">UNIVERSITY</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px;">
+            <span>Saved</span><span style="color:var(--text);font-weight:600;">$44,000 / $80,000</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:55%;background:linear-gradient(90deg,#bf5af2,#7d2fd0);"></div></div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;">Est. $18K remaining per year × 2 years</div>
+        </div>
+        <div class="edu-item">
+          <div class="edu-name">Child 2 — HS, Yr 11 <span class="edu-badge hs">HIGH SCHOOL</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px;">
+            <span>Saved</span><span style="color:var(--text);font-weight:600;">$22,000 / $80,000</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:28%;background:linear-gradient(90deg,#0a84ff,#5e5ce6);"></div></div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;">Starting university in ~2 years</div>
+        </div>
+        <div class="edu-item">
+          <div class="edu-name">Child 3 — HS, Yr 9 <span class="edu-badge hs">HIGH SCHOOL</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px;">
+            <span>Saved</span><span style="color:var(--text);font-weight:600;">$14,000 / $80,000</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:18%;background:linear-gradient(90deg,#ffd60a,#ff9f0a);"></div></div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;">Starting university in ~4 years</div>
+        </div>
+      </div>
+
+      <div class="scroll-hint">· · ·</div>
+    </div><!-- /scroll -->
+  </div><!-- /phone -->
+</div><!-- /phone-col -->
+
+
+<!-- ══════════════ SIDE PANEL ══════════════ -->
+<div class="side-panel">
+
+  <!-- Profile Card -->
+  <div class="panel-card">
+    <div class="panel-header">
+      <div class="avatar">D</div>
+      <div>
+        <div class="panel-name">David M.</div>
+        <div class="panel-sub">Scotia Smart Investor · Client Profile</div>
+      </div>
+    </div>
+
+    <div class="panel-section-title">Personal</div>
+    <div class="stat-row"><div class="stat-label">Age</div><div class="stat-value">53 (b. ~1972)</div></div>
+    <div class="stat-row"><div class="stat-label">Spouse</div><div class="stat-value">Wife, 48 · Finances separate</div></div>
+    <div class="stat-row"><div class="stat-label">Children</div><div class="stat-value">3 (Univ. yr 2, HS yr 11, HS yr 9)</div></div>
+    <div class="stat-row"><div class="stat-label">Location</div><div class="stat-value">SW Ontario, Canada</div></div>
+    <div class="stat-row"><div class="stat-label">Employment</div><div class="stat-value">~$145K/yr gross income</div></div>
+    <div class="stat-row"><div class="stat-label">Marginal Tax Rate</div><div class="stat-value">~43% (ON bracket)</div></div>
+
+    <div class="panel-divider"></div>
+    <div class="panel-section-title">Interests & Style</div>
+    <div style="margin-bottom:8px;">
+      <span class="interest-tag">💻 Technology</span>
+      <span class="interest-tag">🤖 AI / Semiconductors</span>
+      <span class="interest-tag">⛏️ Gold / Commodities</span>
+      <span class="interest-tag">🏠 Real Estate</span>
+      <span class="interest-tag">📊 Diversified Growth</span>
+      <span class="interest-tag">🕐 Time-Poor Investor</span>
+    </div>
+    <div class="stat-row"><div class="stat-label">Risk Profile</div><div class="stat-value">Moderate-Aggressive</div></div>
+    <div class="stat-row"><div class="stat-label">Horizon</div><div class="stat-value">7 yrs to retirement at 60</div></div>
+    <div class="stat-row"><div class="stat-label">Mgmt Style</div><div class="stat-value">Delegated (Smart Investor)</div></div>
+
+    <div class="panel-divider"></div>
+    <div class="panel-section-title">Assets & Accounts</div>
+    <div class="stat-row"><div class="stat-label">Primary Home</div><div class="stat-value">~$2.4M est. value</div></div>
+    <div class="stat-row"><div class="stat-label">Mortgage Balance</div><div class="stat-value">$680K · renews Apr 2027</div></div>
+    <div class="stat-row"><div class="stat-label">RRSP</div><div class="stat-value">$173K</div></div>
+    <div class="stat-row"><div class="stat-label">TFSA</div><div class="stat-value">$144K</div></div>
+    <div class="stat-row"><div class="stat-label">Non-Reg. Acct.</div><div class="stat-value">$66K (tech-heavy)</div></div>
+    <div class="stat-row"><div class="stat-label">GIC / Cash</div><div class="stat-value">$29K</div></div>
+    <div class="stat-row"><div class="stat-label">Investment Portfolio</div><div class="stat-value" style="color:var(--green);">$412K total</div></div>
+    <div class="stat-row"><div class="stat-label">Est. Net Worth</div><div class="stat-value" style="color:var(--green);">~$2.15M</div></div>
+
+    <div class="panel-divider"></div>
+    <div class="panel-section-title">Financial Institution</div>
+    <div class="stat-row"><div class="stat-label">Primary Bank</div><div class="stat-value">Scotiabank</div></div>
+    <div class="stat-row"><div class="stat-label">Platform</div><div class="stat-value">Scotia Smart Investor</div></div>
+    <div class="stat-row"><div class="stat-label">Fund Families</div><div class="stat-value">ScotiaFunds + Dynamic</div></div>
+    <div class="stat-row"><div class="stat-label">Advisor Access</div><div class="stat-value">On-demand via app</div></div>
+  </div>
+
+  <!-- Widget Rationale -->
+  <div class="rationale-card">
+    <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--text);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.07);">Why these widgets?</div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:4px;">📊 Your Portfolio + Limits & PACs</div>
+        <div class="rationale-body">David is a <strong>high earner nearing peak RRSP capacity</strong>. Showing real dollar balances by account type (not just total) keeps him aware of allocation imbalances. The PAC tracker nudges him to automate contributions — critical given his limited free time.</div>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:4px;">🤖 AI Smart Recap</div>
+        <div class="rationale-body">David doesn't have time to scan headlines. The AI recap surfaces only news that's <strong>relevant to his specific holdings</strong> — NVDA/VFV for tech, ABX for gold, and macro (BoC rate) for his mortgage. Expandable impact summaries let him go deeper only when he wants to.</div>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:4px;">🎯 Goals Tracker</div>
+        <div class="rationale-body">David has at least 5 simultaneous financial goals. This widget gives him a <strong>single-glance health check</strong> across all of them — colour-coded status prevents any single goal from falling behind without notice. Emotionally resonant goals (retirement, Europe trip) improve engagement and long-term retention.</div>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:4px;">💰 Tax Efficiency (New)</div>
+        <div class="rationale-body">At $145K income and a 43% marginal rate, <strong>tax sheltering is one of David's highest-ROI financial moves</strong>. Surfacing RRSP room and the estimated refund before the March 1 deadline is a direct call to action. This widget alone could drive a meaningful contribution. Capital gains visibility protects him from surprises at tax time.</div>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:4px;">🏠 Mortgage Snapshot (New)</div>
+        <div class="rationale-body">David bought his home 28 years ago and has <strong>~$1.72M in equity</strong> — a dominant part of his net worth. With renewal 14 months away, he needs to be thinking about locking in. This widget surfaces the decision proactively rather than reactively, and positions his Scotia advisor as the logical next step.</div>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:4px;">🎓 Education Fund Tracker (New)</div>
+        <div class="rationale-body">With one child in university and two approaching it, <strong>education costs are David's most imminent cash flow pressure</strong>. Showing per-child savings progress creates urgency and helps him plan PAC top-ups before each university start date. The colour-coded progress bars make the gap feel concrete and actionable.</div>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:4px;">📈 Stocks Tracked</div>
+        <div class="rationale-body">Updated from generic tickers to <strong>David's likely actual portfolio</strong>: NVDA and MSFT reflect his tech interest and non-reg. holdings. VFV is his core ETF. ABX.TO adds commodity diversification. AAPL rounds out the large-cap tech basket. These are all holdings a moderate-aggressive 53-year-old tech enthusiast in Canada would realistically own.</div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /side-panel -->
+
+<!-- Pie tooltip -->
+<div class="pie-tooltip" id="pieTooltip">
+  <div class="tt-header">
+    <span class="tt-acct" id="ttAcct">RRSP</span>
+    <span class="tt-pct" id="ttPct">42%</span>
+  </div>
+  <div class="tt-row"><span class="tt-type">Equities</span><span class="tt-val up" id="ttEq">68%</span></div>
+  <div class="tt-row"><span class="tt-type">Fixed Inc.</span><span class="tt-val" id="ttFi" style="color:var(--blue)">22%</span></div>
+  <div class="tt-row"><span class="tt-type">Cash</span><span class="tt-val" id="ttCash" style="color:var(--muted)">10%</span></div>
+</div>
+
+<script>
+function toggle(el) {
+  el.classList.toggle('open');
+  const t = el.querySelector('.news-toggle');
+  t.textContent = el.classList.contains('open') ? 'How it impacts you ↑' : 'How it impacts you ↓';
+}
+
+const segs = document.querySelectorAll('.pie-seg');
+const tooltip = document.getElementById('pieTooltip');
+
+function showTooltip(seg, x, y) {
+  document.getElementById('ttAcct').textContent = seg.dataset.account;
+  document.getElementById('ttPct').textContent = seg.dataset.pct + ' of portfolio';
+  document.getElementById('ttEq').textContent = seg.dataset.eq;
+  document.getElementById('ttFi').textContent = seg.dataset.fi;
+  document.getElementById('ttCash').textContent = seg.dataset.cash;
+  const tw = tooltip.offsetWidth || 150;
+  let left = x + 14;
+  let top = y - 110;
+  if (left + tw > window.innerWidth - 8) left = x - tw - 14;
+  if (top < 8) top = y + 16;
+  tooltip.style.left = left + 'px';
+  tooltip.style.top = top + 'px';
+  tooltip.classList.add('visible');
+}
+
+segs.forEach(seg => {
+  seg.addEventListener('mouseenter', e => showTooltip(seg, e.clientX, e.clientY));
+  seg.addEventListener('mousemove', e => showTooltip(seg, e.clientX, e.clientY));
+  seg.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+  seg.addEventListener('touchstart', e => {
+    e.preventDefault();
+    const t = e.touches[0];
+    showTooltip(seg, t.clientX, t.clientY);
+    setTimeout(() => tooltip.classList.remove('visible'), 2800);
+  });
+});
+</script>
+</body>
+</html>
